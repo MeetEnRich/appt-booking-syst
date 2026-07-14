@@ -85,6 +85,7 @@ const VisitorBook = () => {
     setDate('');
     setSlots([]);
     setSelectedSlot('');
+    setPurpose('');
   };
 
   const handleBook = async (e) => {
@@ -138,15 +139,31 @@ const VisitorBook = () => {
 
       <div className="dashboard-grid">
         {/* Left Side: Steps Form */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
           {/* Step 1: Select Official */}
           <div className="card" style={{ margin: 0 }}>
-            <h3 style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1.25rem', fontSize: '1.2rem' }}>
-              <span style={{ background: 'var(--primary)', color: '#fff', width: '26px', height: '26px', borderRadius: '50%', display: 'inline-flex', alignItems: 'center', justifyCentert: 'center', justifyContent: 'center', fontSize: '0.85rem' }}>1</span>
+            <h3 style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1rem', fontSize: '1.2rem' }}>
+              <span style={{ background: 'var(--primary)', color: '#fff', width: '26px', height: '26px', borderRadius: '50%', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.85rem' }}>1</span>
               Select Principal Officer
             </h3>
 
-            {loadingOfficials ? (
+            {selectedOfficial ? (
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0.75rem 1rem', background: 'var(--status-approved-bg)', border: '1px solid rgba(16, 185, 129, 0.2)', borderRadius: 'var(--radius-sm)' }}>
+                <div>
+                  <span style={{ display: 'block', fontSize: '0.7rem', color: 'var(--text-muted)', textTransform: 'uppercase' }}>Selected Officer</span>
+                  <span style={{ fontWeight: 600, color: 'var(--primary)', fontSize: '0.95rem' }}>{selectedOfficial.name}</span>
+                  <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginLeft: '0.5rem' }}>— {selectedOfficial.office_title}</span>
+                </div>
+                <button 
+                  type="button" 
+                  className="btn btn-outline" 
+                  onClick={() => handleSelectOfficial(null)}
+                  style={{ padding: '0.25rem 0.5rem', fontSize: '0.75rem' }}
+                >
+                  Change
+                </button>
+              </div>
+            ) : loadingOfficials ? (
               <div style={{ textAlign: 'center', padding: '2rem', color: 'var(--text-muted)' }}>Loading officials...</div>
             ) : (
               <div className="official-selector-grid">
@@ -179,35 +196,85 @@ const VisitorBook = () => {
             )}
           </div>
 
-          {/* Step 2: Date & Slot Pickers */}
+          {/* Step 2: Choose Date */}
           {!isSuspended && selectedOfficial && (
             <div className="card" style={{ margin: 0 }}>
-              <h3 style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1.25rem', fontSize: '1.2rem' }}>
+              <h3 style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1rem', fontSize: '1.2rem' }}>
                 <span style={{ background: 'var(--primary)', color: '#fff', width: '26px', height: '26px', borderRadius: '50%', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.85rem' }}>2</span>
-                Choose Date & Slot
+                Choose Date
               </h3>
 
-              <div className="form-group">
-                <label className="form-label">Select Date (Next 2 weeks)</label>
-                <input
-                  type="date"
-                  className="form-control"
-                  min={todayStr}
-                  max={maxDateStr}
-                  value={date}
-                  onChange={(e) => setDate(e.target.value)}
-                />
-              </div>
+              {date ? (
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0.75rem 1rem', background: 'var(--status-approved-bg)', border: '1px solid rgba(16, 185, 129, 0.2)', borderRadius: 'var(--radius-sm)' }}>
+                  <div>
+                    <span style={{ display: 'block', fontSize: '0.7rem', color: 'var(--text-muted)', textTransform: 'uppercase' }}>Selected Date</span>
+                    <span style={{ fontWeight: 600, color: 'var(--primary)', fontSize: '0.95rem' }}>
+                      {new Date(date).toLocaleDateString(undefined, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
+                    </span>
+                  </div>
+                  <button 
+                    type="button" 
+                    className="btn btn-outline" 
+                    onClick={() => {
+                      setDate('');
+                      setSelectedSlot('');
+                      setPurpose('');
+                    }}
+                    style={{ padding: '0.25rem 0.5rem', fontSize: '0.75rem' }}
+                  >
+                    Change
+                  </button>
+                </div>
+              ) : (
+                <div className="form-group" style={{ marginBottom: 0 }}>
+                  <label className="form-label">Select Date (Next 2 weeks)</label>
+                  <input
+                    type="date"
+                    className="form-control"
+                    min={todayStr}
+                    max={maxDateStr}
+                    value={date}
+                    onChange={(e) => setDate(e.target.value)}
+                  />
+                </div>
+              )}
+            </div>
+          )}
 
-              {date && (
-                <div className="slot-picker-container">
-                  <h4 style={{ fontSize: '1rem', color: 'var(--text-dark)' }}>Time Slot Availability</h4>
+          {/* Step 3: Choose Time Slot */}
+          {!isSuspended && selectedOfficial && date && (
+            <div className="card" style={{ margin: 0 }}>
+              <h3 style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1rem', fontSize: '1.2rem' }}>
+                <span style={{ background: 'var(--primary)', color: '#fff', width: '26px', height: '26px', borderRadius: '50%', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.85rem' }}>3</span>
+                Choose Time Slot
+              </h3>
+
+              {selectedSlot ? (
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0.75rem 1rem', background: 'var(--status-approved-bg)', border: '1px solid rgba(16, 185, 129, 0.2)', borderRadius: 'var(--radius-sm)' }}>
+                  <div>
+                    <span style={{ display: 'block', fontSize: '0.7rem', color: 'var(--text-muted)', textTransform: 'uppercase' }}>Selected Time Slot</span>
+                    <span style={{ fontWeight: 600, color: 'var(--primary)', fontSize: '0.95rem' }}>{selectedSlot} hrs</span>
+                  </div>
+                  <button 
+                    type="button" 
+                    className="btn btn-outline" 
+                    onClick={() => {
+                      setSelectedSlot('');
+                      setPurpose('');
+                    }}
+                    style={{ padding: '0.25rem 0.5rem', fontSize: '0.75rem' }}
+                  >
+                    Change
+                  </button>
+                </div>
+              ) : (
+                <div className="slot-picker-container" style={{ marginTop: 0 }}>
                   {loadingSlots ? (
                     <div style={{ textAlign: 'center', padding: '1.5rem', color: 'var(--text-muted)' }}>Calculating real-time availability...</div>
                   ) : availabilityMsg ? (
-                    <div className="alert alert-danger" style={{ marginTop: '1rem' }}>{availabilityMsg}</div>
+                    <div className="alert alert-danger" style={{ marginTop: 0 }}>{availabilityMsg}</div>
                   ) : slots.length === 0 ? (
-                    <p style={{ marginTop: '1rem', color: 'var(--text-muted)' }}>No slots found for this date.</p>
+                    <p style={{ color: 'var(--text-muted)' }}>No slots found for this date.</p>
                   ) : (
                     <div className="slot-grid">
                       {slots.map(slot => (
@@ -229,11 +296,11 @@ const VisitorBook = () => {
             </div>
           )}
 
-          {/* Step 3: Booking Form Details */}
+          {/* Step 4: Purpose & Submit */}
           {!isSuspended && selectedOfficial && date && selectedSlot && (
             <div className="card" style={{ margin: 0 }}>
               <h3 style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1.25rem', fontSize: '1.2rem' }}>
-                <span style={{ background: 'var(--primary)', color: '#fff', width: '26px', height: '26px', borderRadius: '50%', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.85rem' }}>3</span>
+                <span style={{ background: 'var(--primary)', color: '#fff', width: '26px', height: '26px', borderRadius: '50%', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.85rem' }}>4</span>
                 Provide Purpose & Submit
               </h3>
 

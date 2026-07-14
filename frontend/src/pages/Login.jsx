@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../utils/AuthContext';
-import { LogIn, Info } from 'lucide-react';
+import { LogIn } from 'lucide-react';
 
 const Login = () => {
   const { login } = useAuth();
@@ -11,7 +11,7 @@ const Login = () => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const [showDemoCreds, setShowDemoCreds] = useState(true);
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -35,10 +35,7 @@ const Login = () => {
     }
   };
 
-  const fillCredentials = (demoEmail, demoPass) => {
-    setEmail(demoEmail);
-    setPassword(demoPass);
-  };
+
 
   return (
     <div className="auth-wrapper">
@@ -101,34 +98,6 @@ const Login = () => {
             Don't have an account? <Link to="/register">Register as Visitor</Link>
           </div>
         </div>
-
-        {/* Demo Credentials Panel for defense review */}
-        {showDemoCreds && (
-          <div className="card" style={{ padding: '0.75rem', margin: 0, borderRadius: 'var(--radius-md)', border: '1px dashed var(--secondary)' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--primary)', fontWeight: 700, fontSize: '0.8rem', marginBottom: '0.4rem' }}>
-              <Info size={16} />
-              <span>Project Review Demo Accounts (Password: password123)</span>
-            </div>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '0.5rem', fontSize: '0.8rem', textAlign: 'left' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'var(--bg-main)', padding: '0.5rem', borderRadius: '4px' }}>
-                <span><strong>Admin:</strong> admin@fulafia.edu.ng</span>
-                <button className="btn btn-secondary" style={{ padding: '0.2rem 0.5rem', fontSize: '0.7rem' }} onClick={() => fillCredentials('admin@fulafia.edu.ng', 'password123')}>Fill</button>
-              </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'var(--bg-main)', padding: '0.5rem', borderRadius: '4px' }}>
-                <span><strong>Secretary (VC):</strong> vc_sec@fulafia.edu.ng</span>
-                <button className="btn btn-secondary" style={{ padding: '0.2rem 0.5rem', fontSize: '0.7rem' }} onClick={() => fillCredentials('vc_sec@fulafia.edu.ng', 'password123')}>Fill</button>
-              </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'var(--bg-main)', padding: '0.5rem', borderRadius: '4px' }}>
-                <span><strong>Visitor (Student):</strong> student@fulafia.edu.ng</span>
-                <button className="btn btn-secondary" style={{ padding: '0.2rem 0.5rem', fontSize: '0.7rem' }} onClick={() => fillCredentials('student@fulafia.edu.ng', 'password123')}>Fill</button>
-              </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'var(--bg-main)', padding: '0.5rem', borderRadius: '4px' }}>
-                <span><strong>Visitor (Staff):</strong> staff@fulafia.edu.ng</span>
-                <button className="btn btn-secondary" style={{ padding: '0.2rem 0.5rem', fontSize: '0.7rem' }} onClick={() => fillCredentials('staff@fulafia.edu.ng', 'password123')}>Fill</button>
-              </div>
-            </div>
-          </div>
-        )}
       </div>
     </div>
   );
