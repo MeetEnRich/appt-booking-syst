@@ -18,29 +18,48 @@ This platform digitizes the traditional paper-based logbook scheduling, replacin
 
 ## Setup & Running Locally
 
-Follow these quick steps to set up and start the application on your local machine:
+You can set up and run the application either automatically using the provided Windows batch files or manually via the terminal.
 
-### 1. Install All Dependencies
-Open a terminal in the root project folder and run:
-```bash
-npm run install:all
-```
-*This command automatically installs package dependencies for the root, the backend API, and the React frontend.*
+### Option A: Automatic Setup (Recommended for Windows)
 
-### 2. Seed the Database
-Pre-populate the SQLite database with officials, secretaries, visitors, and sample appointments by running:
-```bash
-npm run seed
-```
+1. **Setup dependencies & database**:
+   Double-click the **`setup.bat`** file in the root directory (or run `setup.bat` in command prompt). 
+   *This script automatically verifies Node.js presence, installs all root, frontend, and backend packages, and seeds the SQLite database.*
 
-### 3. Start Development Servers
-Run the unified dev command to launch both the Express backend (port `5000`) and the Vite-React frontend (port `5173`) concurrently:
-```bash
-npm run dev
-```
+2. **Start the application**:
+   Double-click the **`start.bat`** file in the root directory (or run `start.bat` in command prompt).
+   *This checks that dependencies exist and starts both the Express API and Vite React server concurrently.*
 
-- **Frontend URL**: [http://localhost:5173](http://localhost:5173)
+---
+
+### Option B: Manual Setup (Terminal / Linux / macOS)
+
+1. **Install All Dependencies**:
+   Open a terminal in the root project folder and run:
+   ```bash
+   npm run install:all
+   ```
+   *This command automatically runs npm install across the root, backend API, and React frontend.*
+
+2. **Seed the Database**:
+   Pre-populate the SQLite database with officials, secretaries, visitors, and sample appointments by running:
+   ```bash
+   npm run seed
+   ```
+
+3. **Start Development Servers**:
+   Run the unified dev command to launch the backend (port `5000`) and the Vite-React frontend (port `5173` or fallback `5174`) concurrently:
+   ```bash
+   npm run dev
+   ```
+
+---
+
+### Access Links
+- **Frontend App**: [http://localhost:5173](http://localhost:5173) (or check Vite terminal output for fallback port, e.g. `5174`)
 - **Backend Health Check**: [http://localhost:5000/health](http://localhost:5000/health)
+
+---
 
 ---
 
