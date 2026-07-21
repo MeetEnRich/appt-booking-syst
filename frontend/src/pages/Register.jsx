@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import api from '../utils/api';
+import { useAuth } from '../utils/AuthContext';
 import { UserPlus } from 'lucide-react';
 
 const Register = () => {
   const navigate = useNavigate();
+  const { register } = useAuth();
 
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
@@ -31,11 +32,11 @@ const Register = () => {
     setLoading(true);
 
     try {
-      const data = await api.auth.register(fullName, email, matricStaffId, password);
-      setSuccess(data.message || 'Registration successful! Redirecting to login...');
+      const data = await register(fullName, email, password, matricStaffId);
+      setSuccess(data.message || 'Registration successful! Logging you in...');
       setTimeout(() => {
-        navigate('/login');
-      }, 2500);
+        navigate('/book');
+      }, 1500);
     } catch (err) {
       setError(err.message || 'Registration failed. Please try again.');
     } finally {

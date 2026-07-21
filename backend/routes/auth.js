@@ -24,12 +24,46 @@ router.post('/register', async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     // Insert user as visitor
-    await dbQuery.run(
+    const result = await dbQuery.run(
       `INSERT INTO users (full_name, email, password_hash, role, matric_staff_id) VALUES (?, ?, ?, ?, ?)`,
       [full_name.trim(), email.toLowerCase().trim(), hashedPassword, 'visitor', matric_staff_id ? matric_staff_id.trim() : null]
     );
 
-    res.status(201).json({ message: 'Registration successful! You can now log in.' });
+    // Fetch the newly created user record
+    const user = await dbQuery.get('SELECT * FROM users WHERE id = ?', [result.id]);
+
+    // Create JWT token
+    const token = jwt.sign(
+      {
+        id: user.id,
+        full_name: user.full_name,
+        email: user.email,
+        role: user.role,
+        matric_staff_id: user.matric_staff_id
+      },
+      JWT_SECRET,
+      { expiresIn: '24h' }
+    );
+
+    // Set cookie
+    res.cookie('token', token, {
+      httpOnly: true,
+      secure: false, // Set to true in production
+      maxAge: 24 * 60 * 60 * 1000, // 24 hours
+      sameSite: 'lax'
+    });
+
+    res.status(201).json({
+      message: 'Registration successful! Logging you in...',
+      token,
+      user: {
+        id: user.id,
+        full_name: user.full_name,
+        email: user.email,
+        role: user.role,
+        matric_staff_id: user.matric_staff_id
+      }
+    });
   } catch (error) {
     console.error('Registration error:', error);
     res.status(500).json({ error: 'Internal server error during registration.' });

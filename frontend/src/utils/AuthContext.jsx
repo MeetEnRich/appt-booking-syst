@@ -89,7 +89,20 @@ export const AuthProvider = ({ children }) => {
   };
 
   const register = async (fullName, email, password, matricStaffId) => {
-    return await api.auth.register(fullName, email, password, matricStaffId);
+    setLoading(true);
+    try {
+      const data = await api.auth.register(fullName, email, password, matricStaffId);
+      if (data.token) {
+        localStorage.setItem('token', data.token);
+      }
+      setUser(data.user);
+      return data;
+    } catch (err) {
+      setUser(null);
+      throw err;
+    } finally {
+      setLoading(false);
+    }
   };
 
   const logout = async () => {
